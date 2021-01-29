@@ -1,6 +1,7 @@
 package com.binding.nicedialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.StyleRes
@@ -34,6 +35,10 @@ abstract class BaseNiceDialog<VB : ViewBinding> : DialogFragment() {
     }
 
     private lateinit var mHostContext: Context
+
+    var dismissCallback : DismissCallback?=null
+    // 默认true,认为由用户关闭的弹窗
+    protected var dismissManually = true
 
     // 判断Dialog是否显示
     private var isPrepared = false
@@ -121,8 +126,26 @@ abstract class BaseNiceDialog<VB : ViewBinding> : DialogFragment() {
         isDialogShowing = isVisible
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        dismissCallback?.onDismiss(this, dismissManually)
+    }
+
+    /**
+     * dialog dismissed by user
+     */
+    fun dismissManually(manually: Boolean) {
+        dismissManually = manually
+        super.dismissAllowingStateLoss()
+    }
+
     override fun dismiss() {
         dismissAllowingStateLoss()
+    }
+
+    override fun dismissAllowingStateLoss() {
+        dismissManually = true
+        super.dismissAllowingStateLoss()
     }
 
     override fun onStart() {

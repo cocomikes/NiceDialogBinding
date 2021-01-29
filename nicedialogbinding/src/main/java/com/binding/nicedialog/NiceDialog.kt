@@ -23,8 +23,20 @@ class NiceDialog<VB : ViewBinding> : BaseNiceDialog<VB>(){
         convertListener?.convertView(vb, dialog)
     }
 
+    override fun onDialogVisibleChange(isVisible: Boolean) {
+        super.onDialogVisibleChange(isVisible)
+        if (isVisible) {
+            if (convertListener == null) {
+                // dismiss
+                dismissManually(false)
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        convertListener = null
+        if (dismissManually) {
+            convertListener = null
+        }
     }
 }
