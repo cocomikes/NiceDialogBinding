@@ -1,0 +1,2 @@
+# NiceDialogBinding
+NiceDialog + ViewBinding
